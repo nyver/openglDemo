@@ -6,6 +6,8 @@ import com.nyver.opengl.demo.graphic.ShaderProgram;
 import com.nyver.opengl.demo.graphic.Transformation;
 import org.joml.Matrix4f;
 
+import java.util.List;
+
 import static org.lwjgl.opengl.GL11.*;
 
 public class Renderer {
@@ -22,6 +24,9 @@ public class Renderer {
     private final Transformation transformation;
 
     private ShaderProgram shaderProgram;
+
+    private boolean drawing;
+    private Matrix4f viewMatrix;
 
     public Renderer() {
         transformation = new Transformation();
@@ -48,10 +53,15 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Window window, Camera camera, Entity[] gameItems) {
+    public void beginRender(Window window, Camera camera) {
+        if (drawing) {
+            throw new IllegalStateException("Renderer is already drawing!");
+        }
+        drawing = true;
+
         clear();
 
-        if ( window.isResized() ) {
+        if (window.isResized()) {
             glViewport(0, 0, window.getWidth(), window.getHeight());
             window.setResized(false);
         }
@@ -63,21 +73,34 @@ public class Renderer {
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
         // Update view Matrix
-        Matrix4f viewMatrix = transformation.getViewMatrix(camera);
+        viewMatrix = transformation.getViewMatrix(camera);
 
         shaderProgram.setUniform("texture_sampler", 0);
+    }
+
+    public void render(Entity gameItem) {
+        Mesh mesh = gameItem.getMesh();
+        // Set model view matrix for this item
+        Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
+        shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
+        // Render the mesh for this game item
+        shaderProgram.setUniform("colour", mesh.getColor().toVector3f());
+        shaderProgram.setUniform("useColour", mesh.isTextured() ? 0 : 1);
+        mesh.render();
+    }
+
+    public void render(List<Entity> gameItems) {
         // Render each gameItem
         for(Entity gameItem : gameItems) {
-            Mesh mesh = gameItem.getMesh();
-            // Set model view matrix for this item
-            Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
-            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            // Render the mesh for this game item
-            shaderProgram.setUniform("colour", mesh.getColor().toVector3f());
-            shaderProgram.setUniform("useColour", mesh.isTextured() ? 0 : 1);
-            mesh.render();
+            render(gameItem);
         }
+    }
 
+    public void endRender() {
+        if (!drawing) {
+            throw new IllegalStateException("Renderer isn't drawing!");
+        }
+        drawing = false;
         shaderProgram.unbind();
     }
 
