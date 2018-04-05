@@ -1,0 +1,17 @@
+build_gradle
+testPath
+.gradle
+*.iml
+*.ipr
+*.iws
+.nb-gradle-properties
+/.settings
+/bin
+/.classpath
+/out
+/.project
+/velocity.log
+.project
+/.idea
+/.nb-gradle
+
