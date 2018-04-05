@@ -1,5 +1,6 @@
 package com.nyver.opengl.demo.engine;
 
+import com.nyver.opengl.demo.graphic.Camera;
 import com.nyver.opengl.demo.graphic.ShaderProgram;
 import com.nyver.opengl.demo.graphic.Transformation;
 import org.joml.Matrix4f;
@@ -34,7 +35,7 @@ public class Renderer {
 
         // Create uniforms for world and projection matrices and texture
         shaderProgram.createUniform("projectionMatrix");
-        shaderProgram.createUniform("worldMatrix");
+        shaderProgram.createUniform("modelViewMatrix");
         shaderProgram.createUniform("texture_sampler");
     }
 
@@ -42,7 +43,7 @@ public class Renderer {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
-    public void render(Window window, Entity[] gameItems) {
+    public void render(Window window, Camera camera, Entity[] gameItems) {
         clear();
 
         if ( window.isResized() ) {
@@ -56,15 +57,15 @@ public class Renderer {
         Matrix4f projectionMatrix = transformation.getProjectionMatrix(FOV, window.getWidth(), window.getHeight(), Z_NEAR, Z_FAR);
         shaderProgram.setUniform("projectionMatrix", projectionMatrix);
 
+        // Update view Matrix
+        Matrix4f viewMatrix = transformation.getViewMatrix(camera);
+
         shaderProgram.setUniform("texture_sampler", 0);
         // Render each gameItem
         for(Entity gameItem : gameItems) {
-            // Set world matrix for this item
-            Matrix4f worldMatrix = transformation.getWorldMatrix(
-                    gameItem.getPosition(),
-                    gameItem.getRotation(),
-                    gameItem.getScale());
-            shaderProgram.setUniform("worldMatrix", worldMatrix);
+            // Set model view matrix for this item
+            Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
+            shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
             // Render the mes for this game item
             gameItem.getMesh().render();
         }

@@ -5,10 +5,13 @@ import com.nyver.opengl.demo.engine.Renderer;
 import com.nyver.opengl.demo.engine.state.State;
 import com.nyver.opengl.demo.engine.Window;
 import com.nyver.opengl.demo.game.entity.EntityFactory;
+import com.nyver.opengl.demo.graphic.Camera;
 
 public class DemoState implements State {
 
     private final Renderer renderer;
+
+    private final Camera camera;
 
     private final EntityFactory entityFactory;
 
@@ -17,6 +20,7 @@ public class DemoState implements State {
     public DemoState(Renderer renderer, EntityFactory entityFactory) {
         this.renderer = renderer;
         this.entityFactory = entityFactory;
+        this.camera = new Camera();
     }
 
     @Override
@@ -27,6 +31,7 @@ public class DemoState implements State {
 
     @Override
     public void input(Window window) {
+        camera.input(window);
         for (Entity gameItem : gameItems) {
             gameItem.input(window);
         }
@@ -34,6 +39,7 @@ public class DemoState implements State {
 
     @Override
     public void update(float interval) {
+        camera.update();
         for (Entity gameItem : gameItems) {
             gameItem.update();
         }
@@ -41,7 +47,7 @@ public class DemoState implements State {
 
     @Override
     public void render(Window window) {
-        renderer.render(window, gameItems);
+        renderer.render(window, camera, gameItems);
     }
 
     @Override

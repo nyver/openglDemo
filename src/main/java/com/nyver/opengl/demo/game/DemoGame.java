@@ -14,12 +14,12 @@ public class DemoGame extends Game {
     private final EntityFactory entityFactory;
 
     public DemoGame() {
-        this(new StateMachine(), new Renderer(), new EntityFactory());
+        this(new Renderer(), new StateMachine(), new EntityFactory());
     }
 
-    public DemoGame(StateMachine stateMachine, Renderer renderer, EntityFactory entityFactory) {
-        this.state = stateMachine;
+    public DemoGame(Renderer renderer,  StateMachine stateMachine, EntityFactory entityFactory) {
         this.renderer = renderer;
+        this.state = stateMachine;
         this.entityFactory = entityFactory;
     }
 

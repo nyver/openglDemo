@@ -20,27 +20,7 @@ public class Cube extends Entity {
 
     @Override
     public void input(Window window) {
-        setDisplyInc(0);
-        setDisplxInc(0);
-        setDisplzInc(0);
-        setScaleInc(0);
-        if (window.isKeyPressed(GLFW_KEY_UP)) {
-            setDisplyInc(1);
-        } else if (window.isKeyPressed(GLFW_KEY_DOWN)) {
-            setDisplyInc(-1);
-        } else if (window.isKeyPressed(GLFW_KEY_LEFT)) {
-            setDisplxInc(-1);
-        } else if (window.isKeyPressed(GLFW_KEY_RIGHT)) {
-            setDisplxInc(1);
-        } else if (window.isKeyPressed(GLFW_KEY_A)) {
-            setDisplzInc(-1);
-        } else if (window.isKeyPressed(GLFW_KEY_Q)) {
-            setDisplzInc(1);
-        } else if (window.isKeyPressed(GLFW_KEY_Z)) {
-            setScaleInc(-1);
-        } else if (window.isKeyPressed(GLFW_KEY_X)) {
-            setScaleInc(1);
-        }
+
     }
 
     @Override

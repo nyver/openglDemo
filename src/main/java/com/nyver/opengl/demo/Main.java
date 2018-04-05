@@ -9,7 +9,7 @@ public class Main {
         try {
             boolean vSync = true;
             Game game = new DemoGame();
-            Engine engine = new Engine("OpenGL Demo", 640, 480, vSync, game);
+            Engine engine = new Engine("OpenGL Demo", 800, 600, vSync, game);
             engine.start();
         } catch (Exception ex) {
             ex.printStackTrace();
