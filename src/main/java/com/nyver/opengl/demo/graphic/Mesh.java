@@ -29,6 +29,12 @@ public class Mesh {
 
     private Color color;
 
+    private float width;
+
+    private float height;
+
+    private float depth;
+
     public Mesh(float[] positions, float[] textCoords, float[] normals, int[] indices) {
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
@@ -79,6 +85,8 @@ public class Mesh {
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
+
+            calculateParams(positions);
         } finally {
             if (posBuffer != null) {
                 MemoryUtil.memFree(posBuffer);
@@ -162,5 +170,37 @@ public class Mesh {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public float getWidth() {
+        return width;
+    }
+
+    public float getHeight() {
+        return height;
+    }
+
+    public float getDepth() {
+        return depth;
+    }
+
+    protected void calculateParams(float[] positions) {
+        float minX, minY, minZ;
+        minX = minY = minZ = 1;
+        float maxX, maxY, maxZ;
+        maxX = maxY = maxZ = -1;
+        
+        for (int i = 0; i < positions.length; i = i + 3) {
+            minX = Math.min(minX, positions[i]);
+            minY = Math.min(minX, positions[i+1]);
+            minZ = Math.min(minX, positions[i+2]);
+
+            maxX = Math.max(maxX, positions[i]);
+            maxY = Math.max(maxY, positions[i+1]);
+            maxZ = Math.max(maxZ, positions[i+2]);
+        }
+        width = maxX - minX;
+        height = maxY - minY;
+        depth = maxZ - minZ;
     }
 }

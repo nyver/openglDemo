@@ -5,27 +5,25 @@ import org.joml.Vector3f;
 
 public abstract class Entity {
 
+    protected final AABB aabb;
+
     private final float speed;
 
     private final Mesh mesh;
 
-    private final Vector3f position;
-    private Vector3f positionInc;
+    private final Vector3f position = new Vector3f(0, 0, 0);
+    private Vector3f positionInc = new Vector3f(0, 0, 0);
 
-    private float scale;
+    private float scale = 1;
     private int scaleInc = 0;
 
-    private final Vector3f rotation;
-    private Vector3f rotationInc;
+    private final Vector3f rotation = new Vector3f(0, 0, 0);;
+    private Vector3f rotationInc = new Vector3f(0, 0, 0);;
 
     public Entity(Mesh mesh, float speed) {
         this.mesh = mesh;
         this.speed = speed;
-        position = new Vector3f(0, 0, 0);
-        rotation = new Vector3f(0, 0, 0);
-        positionInc = new Vector3f(0, 0, 0);
-        rotationInc = new Vector3f(0, 0,0);
-        scale = 1;
+        this.aabb = new AABB(this);
     }
 
     public abstract void init();
@@ -56,9 +54,9 @@ public abstract class Entity {
         float rotationY = rotation.y + rotationInc.y * 0.01f;
         float rotationZ = rotation.z + rotationInc.z * 0.01f;
         setRotation(rotationX, rotationY, rotationZ);
-    }
 
-    public abstract void render();
+        aabb.update(this);
+    }
 
     public Vector3f getPosition() {
         return position;
@@ -123,5 +121,49 @@ public abstract class Entity {
     public float getSpeed() {
         return speed;
     }
+
+    public AABB getAabb() {
+        return aabb;
+    }
+
+    public Collision collidesWithBorder() {
+        if (position.x < -1.5) {
+            position.x = -1.5f;
+            return Collision.COLLISION_LEFT;
+        }
+        if (position.x > 1.5 - getWidth()) {
+            position.x = 1.5f - getWidth();
+            return Collision.COLLISION_RIGHT;
+        }
+        if (position.y < -1) {
+            position.y = -1f;
+            return Collision.COLLISION_BOTTOM;
+        }
+        if (position.y > 1 - getHeight()) {
+            position.y = 1f - getHeight();
+            return Collision.COLLISION_TOP;
+        }
+        return Collision.NO_COLLISION;
+    }
+
+    public boolean collidesWith(Entity entity) {
+        if (aabb.intersects(entity.getAabb())) {
+            return true;
+        }
+        return false;
+    }
+
+    public float getWidth() {
+        return getMesh().getWidth() * getScale();
+    }
+
+    public float getHeight() {
+        return getMesh().getHeight() * getScale();
+    }
+
+    public float getDepth() {
+        return getMesh().getDepth() * getScale();
+    }
+
 }
 

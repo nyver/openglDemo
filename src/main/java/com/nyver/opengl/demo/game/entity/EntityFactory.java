@@ -6,23 +6,32 @@ import com.nyver.opengl.demo.graphic.Mesh;
 import com.nyver.opengl.demo.graphic.Texture;
 
 public class EntityFactory {
-    public Entity createAsteroid(float x, float y, float z, float scale) throws Exception {
+    public Asteroid createAsteroid(float x, float y, float z, float scale) throws Exception {
         // Create the Mesh
         Texture texture = new Texture("/textures/grassblock.png");
         Mesh mesh = ObjLoader.loadMesh("/models/cube.obj");
         mesh.setTexture(texture);
-        Entity gameItem = new Cube(mesh, 1f);
+        Asteroid gameItem = new Asteroid(mesh, 1f);
         gameItem.setPosition(x, y, z);
         gameItem.setScale(scale);
         return gameItem;
     }
 
-    public Entity createPlayer(float x, float y, float z, float scale) throws Exception {
+    public Player createPlayer(float x, float y, float z, float scale) throws Exception {
         // Create the Mesh
         Texture texture = new Texture("/textures/grassblock.png");
         Mesh mesh = ObjLoader.loadMesh("/models/cube.obj");
         mesh.setTexture(texture);
-        Entity gameItem = new Player(mesh, 1f);
+        Player gameItem = new Player(mesh, 1f);
+        gameItem.setPosition(x, y, z);
+        gameItem.setScale(scale);
+        return gameItem;
+    }
+
+    public Shot createShot(float x, float y, float z, float scale) throws Exception {
+        // Create the Mesh
+        Mesh mesh = ObjLoader.loadMesh("/models/cube.obj");
+        Shot gameItem = new Shot(mesh, 2f);
         gameItem.setPosition(x, y, z);
         gameItem.setScale(scale);
         return gameItem;
