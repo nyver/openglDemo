@@ -34,9 +34,9 @@ public abstract class Entity {
         // Update position
         Vector3f itemPos = getPosition();
         Vector3f itemPosInc = getPositionInc();
-        float posX = itemPos.x + itemPosInc.x * 0.01f;
-        float posY = itemPos.y + itemPosInc.y * 0.01f;
-        float posZ = itemPos.z + itemPosInc.z * 0.01f;
+        float posX = itemPos.x + itemPosInc.x * speed * 0.01f;
+        float posY = itemPos.y + itemPosInc.y * speed * 0.01f;
+        float posZ = itemPos.z + itemPosInc.z * speed * 0.01f;
         setPosition(posX, posY, posZ);
 
         // Update scale

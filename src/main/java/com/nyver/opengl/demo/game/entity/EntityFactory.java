@@ -1,6 +1,5 @@
 package com.nyver.opengl.demo.game.entity;
 
-import com.nyver.opengl.demo.engine.Entity;
 import com.nyver.opengl.demo.engine.ObjLoader;
 import com.nyver.opengl.demo.graphic.Mesh;
 import com.nyver.opengl.demo.graphic.Texture;
@@ -31,7 +30,7 @@ public class EntityFactory {
     public Shot createShot(float x, float y, float z, float scale) throws Exception {
         // Create the Mesh
         Mesh mesh = ObjLoader.loadMesh("/models/cube.obj");
-        Shot gameItem = new Shot(mesh, 2f);
+        Shot gameItem = new Shot(mesh, 3f);
         gameItem.setPosition(x, y, z);
         gameItem.setScale(scale);
         return gameItem;
