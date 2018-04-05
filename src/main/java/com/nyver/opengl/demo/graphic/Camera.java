@@ -7,8 +7,8 @@ import static org.lwjgl.glfw.GLFW.*;
 
 public class Camera {
 
-    private static final float MOUSE_SENSITIVITY = 0.2f;
-    private static final float CAMERA_POS_STEP = 0.05f;
+    public static final float MOUSE_SENSITIVITY = 0.2f;
+    public static final float CAMERA_POS_STEP = 0.05f;
 
     private final Vector3f position;
 

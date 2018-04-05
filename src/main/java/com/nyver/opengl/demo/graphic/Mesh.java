@@ -1,5 +1,6 @@
 package com.nyver.opengl.demo.graphic;
 
+import com.nyver.opengl.demo.engine.Color;
 import org.lwjgl.system.MemoryUtil;
 
 import java.nio.FloatBuffer;
@@ -24,14 +25,17 @@ public class Mesh {
 
     private final int vertexCount;
 
-    private final Texture texture;
+    private Texture texture;
 
-    public Mesh(float[] positions, float[] textCoords, int[] indices, Texture texture) {
+    private Color color;
+
+    public Mesh(float[] positions, float[] textCoords, float[] normals, int[] indices) {
         FloatBuffer posBuffer = null;
         FloatBuffer textCoordsBuffer = null;
+        FloatBuffer vecNormalsBuffer = null;
         IntBuffer indicesBuffer = null;
         try {
-            this.texture = texture;
+            color = Color.WHITE;
             vertexCount = indices.length;
             vbos = new ArrayList<>();
 
@@ -41,7 +45,6 @@ public class Mesh {
             // Position VBO
             VertexBufferObject vboPosition = new VertexBufferObject();
             vbos.add(vboPosition);
-
             posBuffer = MemoryUtil.memAllocFloat(positions.length);
             posBuffer.put(positions).flip();
             vboPosition.bind(GL_ARRAY_BUFFER);
@@ -57,12 +60,20 @@ public class Mesh {
             vboTexture.uploadData(GL_ARRAY_BUFFER, textCoordsBuffer, GL_STATIC_DRAW);
             glVertexAttribPointer(1, 2, GL_FLOAT, false, 0, 0);
 
+            // Vertex normals VBO
+            VertexBufferObject vboNormal = new VertexBufferObject();
+            vbos.add(vboNormal);
+            vecNormalsBuffer = MemoryUtil.memAllocFloat(normals.length);
+            vecNormalsBuffer.put(normals).flip();
+            vboNormal.bind(GL_ARRAY_BUFFER);
+            vboNormal.uploadData(GL_ARRAY_BUFFER, vecNormalsBuffer, GL_STATIC_DRAW);
+            glVertexAttribPointer(2, 3, GL_FLOAT, false, 0, 0);
+
             // Index VBO
             VertexBufferObject vboIndex = new VertexBufferObject();
             vbos.add(vboIndex);
             indicesBuffer = MemoryUtil.memAllocInt(indices.length);
             indicesBuffer.put(indices).flip();
-
             vboIndex.bind(GL_ELEMENT_ARRAY_BUFFER);
             vboIndex.uploadData(GL_ELEMENT_ARRAY_BUFFER, indicesBuffer, GL_STATIC_DRAW);
 
@@ -75,38 +86,43 @@ public class Mesh {
             if (textCoordsBuffer != null) {
                 MemoryUtil.memFree(textCoordsBuffer);
             }
+            if (vecNormalsBuffer != null) {
+                MemoryUtil.memFree(vecNormalsBuffer);
+            }
             if (indicesBuffer != null) {
                 MemoryUtil.memFree(indicesBuffer);
             }
         }
     }
-
-    public int getVaoId() {
-        return vao.getID();
-    }
-
+    
     public int getVertexCount() {
         return vertexCount;
     }
 
     public void render() {
         glEnable(GL_DEPTH_TEST);
-        // Activate firs texture bank
-        glActiveTexture(GL_TEXTURE0);
-        // Bind the texture
-        glBindTexture(GL_TEXTURE_2D, texture.getId());
+
+        if (isTextured()) {
+            // Activate firs texture bank
+            glActiveTexture(GL_TEXTURE0);
+            // Bind the texture
+            glBindTexture(GL_TEXTURE_2D, texture.getId());
+        }
 
         // Draw the mesh
         vao.bind();
         glEnableVertexAttribArray(0);
         glEnableVertexAttribArray(1);
+        glEnableVertexAttribArray(2);
 
         glDrawElements(GL_TRIANGLES, getVertexCount(), GL_UNSIGNED_INT, 0);
 
         // Restore state
         glDisableVertexAttribArray(0);
         glDisableVertexAttribArray(1);
+        glDisableVertexAttribArray(2);
         glBindVertexArray(0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 
     public void delete() {
@@ -119,10 +135,32 @@ public class Mesh {
         }
 
         // Delete the texture
-        texture.delete();
+        if (null != texture) {
+            texture.delete();
+        }
 
         // Delete the VAO
         glBindVertexArray(0);
         vao.delete();
+    }
+
+    public Texture getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    public boolean isTextured() {
+        return this.texture != null;
+    }
+
+    public Color getColor() {
+        return color;
+    }
+
+    public void setColor(Color color) {
+        this.color = color;
     }
 }

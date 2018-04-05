@@ -1,5 +1,6 @@
 package com.nyver.opengl.demo.engine.state;
 
+import com.nyver.opengl.demo.engine.MouseInput;
 import com.nyver.opengl.demo.engine.Window;
 
 import java.util.HashMap;
@@ -47,13 +48,13 @@ public class StateMachine implements State {
     }
 
     @Override
-    public void input(Window window) {
-        currentState.input(window);
+    public void input(Window window, MouseInput mouseInput) {
+        currentState.input(window, mouseInput);
     }
 
     @Override
-    public void update(float interval) {
-        currentState.update(interval);
+    public void update(float interval, MouseInput mouseInput) {
+        currentState.update(interval, mouseInput);
     }
 
     @Override

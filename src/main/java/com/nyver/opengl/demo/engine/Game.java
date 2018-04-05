@@ -9,12 +9,12 @@ public abstract class Game {
 
     public abstract void init(Window window) throws Exception;
 
-    public void input(Window window) {
-        state.input(window);
+    public void input(Window window, MouseInput mouseInput) {
+        state.input(window, mouseInput);
     }
 
-    public void update(float interval) {
-        state.update(interval);
+    public void update(float interval, MouseInput mouseInput) {
+        state.update(interval, mouseInput);
     }
 
     public void render(Window window) {

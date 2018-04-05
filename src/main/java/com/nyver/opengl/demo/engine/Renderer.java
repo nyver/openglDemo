@@ -1,6 +1,7 @@
 package com.nyver.opengl.demo.engine;
 
 import com.nyver.opengl.demo.graphic.Camera;
+import com.nyver.opengl.demo.graphic.Mesh;
 import com.nyver.opengl.demo.graphic.ShaderProgram;
 import com.nyver.opengl.demo.graphic.Transformation;
 import org.joml.Matrix4f;
@@ -37,6 +38,10 @@ public class Renderer {
         shaderProgram.createUniform("projectionMatrix");
         shaderProgram.createUniform("modelViewMatrix");
         shaderProgram.createUniform("texture_sampler");
+
+        // Create uniform for default colour and the flag that controls it
+        shaderProgram.createUniform("colour");
+        shaderProgram.createUniform("useColour");
     }
 
     public void clear() {
@@ -63,11 +68,14 @@ public class Renderer {
         shaderProgram.setUniform("texture_sampler", 0);
         // Render each gameItem
         for(Entity gameItem : gameItems) {
+            Mesh mesh = gameItem.getMesh();
             // Set model view matrix for this item
             Matrix4f modelViewMatrix = transformation.getModelViewMatrix(gameItem, viewMatrix);
             shaderProgram.setUniform("modelViewMatrix", modelViewMatrix);
-            // Render the mes for this game item
-            gameItem.getMesh().render();
+            // Render the mesh for this game item
+            shaderProgram.setUniform("colour", mesh.getColor().toVector3f());
+            shaderProgram.setUniform("useColour", mesh.isTextured() ? 0 : 1);
+            mesh.render();
         }
 
         shaderProgram.unbind();

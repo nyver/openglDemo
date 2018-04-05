@@ -17,7 +17,7 @@ public class DemoGame extends Game {
         this(new Renderer(), new StateMachine(), new EntityFactory());
     }
 
-    public DemoGame(Renderer renderer,  StateMachine stateMachine, EntityFactory entityFactory) {
+    public DemoGame(Renderer renderer, StateMachine stateMachine, EntityFactory entityFactory) {
         this.renderer = renderer;
         this.state = stateMachine;
         this.entityFactory = entityFactory;
@@ -28,6 +28,7 @@ public class DemoGame extends Game {
         state.add("game", new DemoState(renderer, entityFactory));
         state.change(window, "game");
     }
+
 
     @Override
     public void cleanup() {
